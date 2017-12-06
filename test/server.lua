@@ -1,5 +1,5 @@
 -- load the lib
-require 'librg_lua'
+require 'librg-lua'
 
 
 

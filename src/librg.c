@@ -118,7 +118,7 @@ static int llibrg_free(lua_State *L) {
 // !
 // =======================================================================//
 
-LUALIB_API int luaopen_librg_lua(lua_State *L) {
+LUALIB_API int luaopen_lua(lua_State *L) {
     LIBRG_LUA_CONSTANT("LIBRG_VERSION",                     LIBRG_VERSION);
 
     LIBRG_LUA_CONSTANT("LIBRG_PLATFORM_ID",                 LIBRG_PLATFORM_ID);

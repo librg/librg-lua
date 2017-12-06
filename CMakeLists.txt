@@ -11,7 +11,7 @@ add_definitions(-DLUA_USE_APICHECK=1)
 add_subdirectory(node_modules/librg.c)
 link_directories("${PROJECT_SOURCE_DIR}/lua")
 
-set(LIB_NAME "librg_lua")
+set(LIB_NAME "librg-lua")
 
 add_library(${LIB_NAME} MODULE src/librg.c)
 
