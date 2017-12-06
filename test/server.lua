@@ -1,22 +1,12 @@
 -- load the lib
 require 'librg-lua'
 
-
-
--- -- create context
--- local librg = librg_lua.create({
---     mode            = LIBRG_MODE_SERVER,
---     tick_delay      = 32,
---     max_connections = 100,
--- });
-
-
 function main()
     librg_option_set(LIBRG_NETWORK_CHANNELS, 4);
     print(librg_option_get(LIBRG_NETWORK_CHANNELS));
 
     local ctx = librg_init({
-        mode            = LIBRG_MODE_SERVER,
+        mode            = LIBRG_MODE_CLIENT,
         tick_delay      = 64,
         max_entities    = 9923,
         max_connections = 100,
@@ -25,24 +15,24 @@ function main()
     });
 
     print(ctx);
+    print("is server: ");
+    print(librg_is_server(ctx));
+    print("is client: ")
+    print(librg_is_client(ctx));
+
+    -- do some ticking
+    local a = 0;
+    while (a < 500) do
+        librg_tick(ctx); a = a + 1;
+    end
+
+    librg_event_add(ctx, 42, function(event)
+        print("handler called");
+    end)
+
+    librg_event_trigger(ctx, 42, { user_data = "hello world" });
 
     librg_free(ctx);
-
-    -- librg.init(function()
-    --     -- librg.component_register(); -- oh shittttt
-    -- end)
-
-    -- librg.network_start({
-    --     -- host = "localhost",
-    --     port = 27010,
-    -- });
-
-    -- while true do
-    --     librg.tick();
-    -- end
-
-    -- librg.network_stop();
-    -- librg.free();
 end
 
 main();

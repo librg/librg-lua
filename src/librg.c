@@ -5,7 +5,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <librg.h>
-// #include "lualib.h"
 
 // =======================================================================//
 // !
@@ -39,7 +38,7 @@ static void librg_lua_assert_argc(lua_State *L, int pass) {
 
 // =======================================================================//
 // !
-// ! Method bindings
+// ! General method bindings
 // !
 // =======================================================================//
 
@@ -87,20 +86,6 @@ static int llibrg_init(lua_State *L) {
     ctx->mode            = mode;
     ctx->world_size      = zplm_vec3(world_size_x, world_size_y, world_size_z);
 
-    // librg_log("world_size_x: %f\n" \
-    //     "world_size_y: %f\n" \
-    //     "tick_delay: %d\n" \
-    //     "max_connections: %d\n" \
-    //     "max_entities: %d\n" \
-    //     "mode: %d\n",
-    //     ctx->world_size.x,
-    //     ctx->world_size.y,
-    //     ctx->tick_delay,
-    //     ctx->max_connections,
-    //     ctx->max_entities,
-    //     ctx->mode
-    // );
-
     librg_init(ctx);
     return 1;
 }
@@ -111,6 +96,99 @@ static int llibrg_free(lua_State *L) {
     librg_free((librg_ctx_t *)lua_touserdata(L, 1));
     return 1;
 }
+
+static int llibrg_tick(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 1);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    librg_tick((librg_ctx_t *)lua_touserdata(L, 1));
+    return 1;
+}
+
+static int llibrg_is_server(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 1);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    lua_pushboolean(L, librg_is_server(lua_touserdata(L, 1)));
+    return 1;
+}
+
+static int llibrg_is_client(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 1);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    lua_pushboolean(L, librg_is_client(lua_touserdata(L, 1)));
+    return 1;
+}
+
+static int llibrg_is_connected(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 1);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    lua_pushboolean(L, librg_is_connected(lua_touserdata(L, 1)));
+    return 1;
+}
+
+
+// =======================================================================//
+// !
+// ! Event method bindings
+// !
+// =======================================================================//
+
+static int llibrg_event_add(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 3);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+
+    lua_pushinteger(L, librg_event_add(lua_touserdata(L, 1), lua_tointeger(L, 1), lua_tocfunction(L, 1)));
+
+    return 1;
+}
+
+static int llibrg_event_remove(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 3);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    return 1;
+}
+
+static int llibrg_event_trigger(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 3);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    return 1;
+}
+
+static int llibrg_event_reject(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 1);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    return 1;
+}
+
+static int llibrg_event_succeeded(lua_State *L) {
+    librg_lua_assert_argc(L, lua_gettop(L) == 1);
+    librg_lua_assert(L, lua_isuserdata(L, 1), "You should provide a userdata.");
+    return 1;
+}
+
+
+// =======================================================================//
+// !
+// ! Entity method bindings
+// !
+// =======================================================================//
+
+
+
+// =======================================================================//
+// !
+// ! Data method bindings
+// !
+// =======================================================================//
+
+
+
+// =======================================================================//
+// !
+// ! Network/messages method bindings
+// !
+// =======================================================================//
+
+
 
 // =======================================================================//
 // !
@@ -157,18 +235,17 @@ LUALIB_API int luaopen_lua(lua_State *L) {
 
     lua_register(L, "librg_init", llibrg_init);
     lua_register(L, "librg_free", llibrg_free);
+    lua_register(L, "librg_tick", llibrg_tick);
 
-    // lua_setfield(L, 0, "LIBRG_MODE_SERVER");
-    // lua_register(L, "LIBRG_MODE_SERVER", LIBRG_MODE_SERVER)
+    lua_register(L, "librg_is_server",      llibrg_is_server);
+    lua_register(L, "librg_is_client",      llibrg_is_client);
+    lua_register(L, "librg_is_connected",   llibrg_is_connected);
 
-    // lua_pushnumber(L, LIBRG_MODE_CLIENT);
-    // lua_setfield(L, -2, "LIBRG_MODE_CLIENT");
-
-    // lua_newtable(L);
-
-    // LIBRG_LUA_REGISTER("create", librg_lua_create);
-    // LIBRG_LUA_REGISTER("free", librg_lua_free);
-
+    lua_register(L, "librg_event_add",          llibrg_event_add);
+    lua_register(L, "librg_event_remove",       llibrg_event_remove);
+    lua_register(L, "librg_event_trigger",      llibrg_event_trigger);
+    lua_register(L, "librg_event_reject",       llibrg_event_reject);
+    lua_register(L, "librg_event_succeeded",    llibrg_event_succeeded);
 
     return 1;
 }
