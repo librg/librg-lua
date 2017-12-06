@@ -1,0 +1,26 @@
+{
+  "name": "librg-lua",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "librg.c": "^3.0.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/librg/librg-lua.git"
+  },
+  "author": "Inlife",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/librg/librg-lua/issues"
+  },
+  "homepage": "https://github.com/librg/librg-lua#readme"
+}
